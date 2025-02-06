@@ -6,13 +6,18 @@
 
 ### LIS4368 Requirements:
 
-*Course Work Links:*
+_Course Work Links:_
 
 1. [A1 README.md](a1/README.md "My A1 README.md file")
-    - Compile are run Hello.java
-    - Install Apache Tomcat and run localhost:9999
-    - Complete a1/index.jsp
-    - List and describe common git commands
+
+   - Compile are run Hello.java
+   - Install Apache Tomcat and run localhost:9999
+   - Complete a1/index.jsp
+   - List and describe common git commands
 
 2. [A2 README.md](a2/README.md "My A2 README.md file")
-    - TBD
+
+    - Create a Java servlet "sayhello"
+
+    - Establish a MySQL db connection with Java "QueryServlet"
+    - Complete skillsets 1-3
