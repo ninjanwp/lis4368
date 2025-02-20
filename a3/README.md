@@ -31,4 +31,4 @@
 #### Assignment Documents:
 
 * [A3.sql](./docs/a3.sql)
-* [A3.mwb](./docs/A3.mwb)
+* [A3.mwb](./docs/a3.mwb)
