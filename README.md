@@ -13,7 +13,8 @@ _Course Work Links:_
       - Compile are run Hello.java
       - Install Apache Tomcat and run localhost:9999
       - Complete a1/index.jsp
-      - List and describe common git commands      
+      - List and describe common git commands    
+        
 2. [A2 README.md](a2/README.md "My A2 README.md file")
 
       - Create a Java servlet "sayhello   
