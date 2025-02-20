@@ -11,7 +11,7 @@
     <meta name="author" content="Nicholas Pfeffer" />
     <link rel="icon" href="./global/favicon.ico" />
 
-    <title>My Online Portfolio</title>
+    <title>Portfolio</title>
 
     <%@ include file="/css/include_css.jsp" %>
 

@@ -31,14 +31,15 @@
 						<%@ include file="global/header.jsp" %>
 					</div>
 
-					<b>Petstore Database (Entity Relationship Diagram):</b><br />
-					<img src="img/a3.png" class="img-responsive center-block" alt="A3 ERD" />
+					<h4>Petstore Database (Entity Relationship Diagram):</h4><br />
+					<img src="img/a3_erd.png" class="img-responsive center-block" alt="A3 ERD" />
 
 					<br /> <br />
-					<b>MySQL Workbench and SQL Files:</b><br />
-					<a href="docs/a3.mwb">Petstore MySQL Workbench File</a>
-				<br />
-					<a href="docs/a3.sql">Petstore SQL File</a>				
+					<h4>MySQL Workbench and SQL Files:</h4><br />
+					<ul>
+						<li><a href="docs/a3.mwb">Petstore MySQL Workbench File</a></li>
+						<li><a href="docs/a3.sql">Petstore SQL File</a></li>
+					</ul>			
 
 	<%@ include file="/global/footer.jsp" %>
 

@@ -31,13 +31,13 @@
 						<%@ include file="global/header.jsp" %>
 					</div>
 
-					<b>Servlet Compilation and Usage:</b><br />
+					<h4>Servlet Compilation and Usage:</h4><br />
 					<img src="img/helloindex.png" class="img-responsive center-block" alt="Using Servlets" />
 					<img src="img/sayhello.png" class="img-responsive center-block" alt="Using Servlets" />
 					<img src="img/helloagain.png" class="img-responsive center-block" alt="Using Servlets" />
 
 					<br /> <br />
-					<b>Database Connectivity Using Servlets:</b><br />
+					<h4>Database Connectivity Using Servlets:</h4><br />
 					<img src="img/servlet.png" class="img-responsive center-block" alt="Database Connectivity Using Servlets" />
 				<br />
 					<img src="img/servletresponse.png" class="img-responsive center-block" alt="Database Connectivity Using Servlets" />

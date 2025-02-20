@@ -33,7 +33,7 @@
 					<img src="img/JavaHello.png" class="img-responsive center-block" alt="JDK Installation" />
 
 					<br /> <br />
-					<b>Tomcat Installation:</b><br />
+					<h4>Tomcat Installation:</h4><br />
 					<img src="img/tomcat_screenshot.png" class="img-responsive center-block" alt="Tomcat Installation" />
 
 	<%@ include file="/global/footer.jsp" %>
