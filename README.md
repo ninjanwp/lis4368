@@ -27,3 +27,10 @@ _Course Work Links:_
       - Engineer an ERD based on the petstore
       - Populate schema with 10 records per-table
       - Complete skillsets 4-6
+
+3. [P1 README.md](p1/README.md "My P1 README.md file")
+
+      - Create form controls suitable for the customer table
+      - Use regular expressions to impose client-side validation for forms
+      - Use the HTML5 property to limit character lengths in fields
+      - Complete skillsets 7-9
