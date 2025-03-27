@@ -21,16 +21,23 @@ _Course Work Links:_
       - Establish a MySQL db connection with Java "QueryServlet"
       - Complete skillsets 1-3
 
-2. [A3 README.md](a3/README.md "My A3 README.md file")
+3. [A3 README.md](a3/README.md "My A3 README.md file")
 
       - Create a petstore schema
       - Engineer an ERD based on the petstore
       - Populate schema with 10 records per-table
       - Complete skillsets 4-6
 
-3. [P1 README.md](p1/README.md "My P1 README.md file")
+4. [P1 README.md](p1/README.md "My P1 README.md file")
 
       - Create form controls suitable for the customer table
       - Use regular expressions to impose client-side validation for forms
       - Use the HTML5 property to limit character lengths in fields
       - Complete skillsets 7-9
+
+5. [A4 README.md](a4/README.md "My A4 README.md file")
+
+      - Create and compile customer java servlets
+      - Design regex for server-side validation
+      - Ensure data is displayed through thanks.jsp
+      - Complete skillsets 10-12

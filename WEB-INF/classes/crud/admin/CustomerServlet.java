@@ -1,236 +1,204 @@
-// save as "<TOMCAT_HOME>\webapps\lis4368\WEB-INF\classes\crud\admin\CustomerServlet.java"
-/*
-	1. Compile:
-	NOTE: *YOUR* path will more than likely be *different*--depending upon where tomcat is installed!
-
-	Windows:
-  cd to C:\tomcat\webapps\lis4368\WEB-INF\classes
-  javac -cp .;c:\tomcat\lib\servlet-api.jar crud/admin/CustomerServlet.java
-
-	Mac: 	
-  cd to /Applications/tomcat/webapps/lis4368/WEB-INF/classes
-  javac -cp .:/Applications/tomcat/lib/servlet-api.jar crud/admin/CustomerServlet.java
-
-	2. Run: http://localhost:9999/lis4368/customerAdmin
-*/
-//package statement indicates which directory this file exists, starting from "classes" directory
 package crud.admin;
 
-import java.io.*; //input/output
-//Note: ArrayList provides *dynamic* resizable-array (i.e., items can be added and removed from list), unlike simple Array (fixed-length)
-import java.util.*; //ArrayList<SomeCollection>, Enumeration
-
-//Tomact 10 must include following imports:
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-
-//These don't work anymore!
-// import javax.servlet.*;
-// import javax.servlet.http.*;
-// import javax.servlet.annotation.*; 
-
-//import Customer and CustomerDB classes
 import crud.business.Customer;
-//import crud.data.CustomerDB;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
-//servlet mapping for Servlet 3.0
-//servlet Customer is mapped to the URL pattern /customerAdmin
-//When accessing this servlet, it will return a message.
 @WebServlet("/customerAdmin")
-public class CustomerServlet extends HttpServlet
-{
-	//perform different request data processing depending on transfer method (here, Post or Get)
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		//initialize global variables:
-		//if no current session, returns new session (required!)
-		HttpSession session = request.getSession();
+public class CustomerServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-		//initialize url variable - used below to direct user to appropriate page	
-		String url = "/index.jsp";
-		String message = ""; //initialize message variable				
-		String action = null; //initialize action
-		String cid = null; //initialize customer id, and used to add customer (auto-increment PK)
-		action = request.getParameter("action"); // get current action
+    // Regex patterns matching your client-side rules:
+    private static final String NAME_REGEX = "^[a-zA-Z\\-]+$";
+    private static final String STREET_REGEX = "^[a-zA-Z0-9,\\-\\. ]+$";
+    private static final String CITY_REGEX = "^[a-zA-Z0-9\\- ]+$";
+    private static final String STATE_REGEX = "^[a-zA-Z]{2}$";
+    private static final String ZIP_REGEX = "^[0-9]{5,9}$";
+    private static final String PHONE_REGEX = "^[0-9]{10}$";
+    private static final String EMAIL_REGEX = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$";
+    // For balance and total sales: up to 6 characters, only one optional decimal point.
+    private static final String MONEY_REGEX = "^(?!.*\\..*\\.)[0-9.]{1,6}$";
 
-		//get user action
-		//from customers.jsp
-		//get id from hidden form field name property: modify_customer (Edit button customers.jsp)
-		if (request.getParameter("modify_customer") != null) 
-			{
-				action = "modify_customer";
-				cid = request.getParameter(action); 
-			}
-		//from customers.jsp
-		//get id from hidden form field name property: delete_customer (Delete button customers.jsp)
-		else if (request.getParameter("delete_customer") != null) 
-			{
-				action = "delete_customer";
-				cid = request.getParameter(action); 
-			}
-		//from modify.jsp
-		//get id from hidden form field update_customer name property
-		else if (request.getParameter("update_customer") != null) 
-			{
-				action = "update_customer";
-				cid = request.getParameter(action);						
-			}
-		else
-			{
-				url = "/index.jsp"; //if none above, pass user to main page
-			}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Retrieve parameters (using names from your client-side form)
+        String cus_fname = request.getParameter("cus_fname");
+        String cus_lname = request.getParameter("cus_lname");
+        String cus_street = request.getParameter("cus_street");
+        String cus_city = request.getParameter("cus_city");
+        String cus_state = request.getParameter("cus_state");
+        String cus_zip = request.getParameter("cus_zip");
+        String cus_phone = request.getParameter("cus_phone");
+        String cus_email = request.getParameter("cus_email");
+        String cus_balance = request.getParameter("cus_balance");
+        String cus_total_sales = request.getParameter("cus_total_sales");
+        String cus_notes = request.getParameter("cus_notes");
 
-		// perform action, based upon request, and set URL to appropriate page
-		//first test: if action variable contains no value, or "join" (from thanks.jsp), send to customerform.jsp
-		//Note: if you invoke .equals() on null will return NullPointerException
-		//Solution: Always advisble to check null before invoking .equals() method
-		if (action == null || action.equals("join"))
-			{
-				url = "/customerform.jsp";   //"join" page						
-			}
-		//from customers.jsp
-		else if (action.equals("modify_customer"))
-			{
-				//Customer user = CustomerDB.selectCustomer(cid);
-				//session.setAttribute("user", user); //Pass data from servlet to jsp using session and setAttribute("name","value") method
-				url = "/modify.jsp"; //pass user to modify.jsp, and display data
-			}
-		//from customerform.jsp
-		else if (action.equals("display_customers"))
-			{
-				//ArrayList<Customer> users = CustomerDB.selectCustomers();            
-				//request.setAttribute("users", users);
-				url = "/customers.jsp"; //pass user to customers.jsp, and display all values
-			}
-		//from customers.jsp
-		else if (action.equals("add_customer"))
-			{
-				// get parameters from the request (data conversions not required here)
-				//zip should be int, phone long, balance and totalSales BigDecimal data types
-				//getParameter() method accepts values from form control *name* attribute
-				//Note: getParameter() is pulling user-entered values from "name" attribute of submitted form
-				String id_v = request.getParameter(null); //null used for auto increment pk field
-				String firstName_v = request.getParameter("fname");
-				String lastName_v = request.getParameter("lname");
-				String email_v = request.getParameter("email");
-				
-				//instantiate new customer object with associated object variable (user)
-				Customer user = new Customer(id_v, firstName_v, lastName_v, email_v);
+        // Collect errors in a map: key is the field name
+        Map<String, String> errors = new HashMap<>();
 
-				//call data input validation method: *Must* agree in TON: type, order, number!
-				if(!isValidInput(firstName_v, lastName_v, email_v))
-					{
-						message = "<span style='color: red; background-color: yellow; font-weight: bold; font-variant:small-caps;'>All text boxes required except Notes.</span>";
-						url = "/customerform.jsp";
-					}
-				else
-					{
-						//add customer
-						//CustomerDB.insert(user);
-						message = ""; //reset message variable to empty string
-						url = "/thanks.jsp"; //pass user to thanks.jsp page
-					}
-				request.setAttribute("user", user);
-				request.setAttribute("message", message);
-			}
+        // Validate first name
+        if (cus_fname == null || cus_fname.trim().isEmpty()) {
+            errors.put("cus_fname", "First name is required.");
+        } else if (cus_fname.length() > 15) {
+            errors.put("cus_fname", "First name must be <= 15 characters.");
+        } else if (!cus_fname.matches(NAME_REGEX)) {
+            errors.put("cus_fname", "First name can only contain letters and hyphens.");
+        }
 
-		/*
-		else if (action.equals("update_customer"))
-			{
-				// get parameters from the request
-				String firstName_v = request.getParameter("fname");
-				String lastName_v = request.getParameter("lname");
-				String email_v = request.getParameter("email");
-				
-				//call data input validation method: *Must* agree in TON: type, order, number!
-				if(!isValidInput(firstName_v, lastName_v, email_v))
-					{
-						url = "/modify.jsp";
-					}
-				else
-					{
-						// get and update customer
-						Customer user = (Customer) session.getAttribute("user");        
+        // Validate last name
+        if (cus_lname == null || cus_lname.trim().isEmpty()) {
+            errors.put("cus_lname", "Last name is required.");
+        } else if (cus_lname.length() > 30) {
+            errors.put("cus_lname", "Last name must be <= 30 characters.");
+        } else if (!cus_lname.matches(NAME_REGEX)) {
+            errors.put("cus_lname", "Last name can only contain letters and hyphens.");
+        }
 
-						user.setId(cid); //cid retrieved from request.getParameter(action);
-						user.setFname(firstName_v);
-						user.setLname(lastName_v);
-						user.setEmail(email_v);
+        // Validate street
+        if (cus_street == null || cus_street.trim().isEmpty()) {
+            errors.put("cus_street", "Street is required.");
+        } else if (cus_street.length() > 30) {
+            errors.put("cus_street", "Street must be <= 30 characters.");
+        } else if (!cus_street.matches(STREET_REGEX)) {
+            errors.put("cus_street", "Street can contain letters, numbers, commas, hyphens, periods, and spaces only.");
+        }
 
-						// update customer				 
-						//CustomerDB.update(user);
-						
-						// display updated customers
-						//ArrayList<Customer> users = CustomerDB.selectCustomers();            
-						//request.setAttribute("users", users);
-						url = "/customers.jsp"; //pass user to customers.jsp page
-					}				
-			}
-		*/
-			
-		else if (action.equals("delete_customer"))
-			{
-				// get customer
-				//Customer user = CustomerDB.selectCustomer(cid);
+        // Validate city
+        if (cus_city == null || cus_city.trim().isEmpty()) {
+            errors.put("cus_city", "City is required.");
+        } else if (cus_city.length() > 30) {
+            errors.put("cus_city", "City must be <= 30 characters.");
+        } else if (!cus_city.matches(CITY_REGEX)) {
+            errors.put("cus_city", "City can contain letters, numbers, hyphens, and spaces.");
+        }
 
-				// delete customer
-				//CustomerDB.delete(user);
-            
-				// display remaining customers
-				//ArrayList<Customer> users = CustomerDB.selectCustomers();            
-				//request.setAttribute("users", users);
+        // Validate state
+        if (cus_state == null || cus_state.trim().isEmpty()) {
+            errors.put("cus_state", "State is required.");
+        } else if (cus_state.length() != 2) {
+            errors.put("cus_state", "State must be exactly 2 letters.");
+        } else if (!cus_state.matches(STATE_REGEX)) {
+            errors.put("cus_state", "State can only contain letters.");
+        }
 
-				url = "/customers.jsp"; //pass user to customers.jsp page
-			}
-		//forward (not redirect), can provide additional security, as user does not see actual URL
-		getServletContext()
-			.getRequestDispatcher(url)
-			.forward(request, response);
-				
-		//sometimes, better to redirect than forward (e.g., insert/update/delete or to see correct URL)
-		//response.sendRedirect(url);
-		//response.sendRedirect("index.jsp"); //or literal value
-	}    
+        // Validate ZIP
+        if (cus_zip == null || cus_zip.trim().isEmpty()) {
+            errors.put("cus_zip", "Zip code is required.");
+        } else if (cus_zip.length() < 5 || cus_zip.length() > 9) {
+            errors.put("cus_zip", "Zip must be 5-9 characters.");
+        } else if (!cus_zip.matches(ZIP_REGEX)) {
+            errors.put("cus_zip", "Zip can only contain digits.");
+        }
 
-	//for all get submissions	
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{	
-		doPost(request, response);
-	}
+        // Validate phone
+        if (cus_phone == null || cus_phone.trim().isEmpty()) {
+            errors.put("cus_phone", "Phone is required.");
+        } else if (cus_phone.length() != 10) {
+            errors.put("cus_phone", "Phone must be exactly 10 digits.");
+        } else if (!cus_phone.matches(PHONE_REGEX)) {
+            errors.put("cus_phone", "Phone can only contain digits.");
+        }
 
-	//validate input: return true or false
-	//here: check *only* for data entry
-	//empty string: string with zero length.
-	//null value: is unknown value--not having a string.
+        // Validate email
+        if (cus_email == null || cus_email.trim().isEmpty()) {
+            errors.put("cus_email", "Email address is required.");
+        } else if (cus_email.length() > 100) {
+            errors.put("cus_email", "Email must be <= 100 characters.");
+        } else if (!cus_email.matches(EMAIL_REGEX)) {
+            errors.put("cus_email", "Must include a valid email address.");
+        }
 
-	//must check for both:
-	//1) null (no object created/no value), and...
-	//2) empty string ("" is an actual string object)
-	
-	//Note: in production environment need rigorous data validation:
-	//http://java-source.net/open-source/validation
-	
-	//create data input validation method: *Must* agree in TON: type, order, number!
-	private boolean isValidInput(String firstName_p, String lastName_p, String email_p)
-	{
-		if (
-				firstName_p == null ||
-				lastName_p == null ||
-				email_p == null ||
-								
-				firstName_p.isEmpty() ||
-				lastName_p.isEmpty() ||
-				email_p.isEmpty()
-				)
-			{
-				return false; //missing form data
-			} 
-		else
-			{
-				return true; //data not missing
-			}
-	}	
+        // Validate balance
+        if (cus_balance == null || cus_balance.trim().isEmpty()) {
+            errors.put("cus_balance", "Balance is required.");
+        } else if (cus_balance.length() > 6) {
+            errors.put("cus_balance", "Balance can be up to 6 characters.");
+        } else if (!cus_balance.matches(MONEY_REGEX)) {
+            errors.put("cus_balance", "Balance must contain only positive digits and at most one decimal point.");
+        } else {
+            try {
+                BigDecimal balance = new BigDecimal(cus_balance);
+                if (balance.compareTo(BigDecimal.ZERO) < 0) {
+                    errors.put("cus_balance", "Balance cannot be negative.");
+                }
+            } catch (NumberFormatException e) {
+                errors.put("cus_balance", "Balance must be a valid decimal number.");
+            }
+        }
+
+        // Validate total sales
+        if (cus_total_sales == null || cus_total_sales.trim().isEmpty()) {
+            errors.put("cus_total_sales", "Total Sales is required.");
+        } else if (cus_total_sales.length() > 6) {
+            errors.put("cus_total_sales", "Total Sales can be up to 6 characters.");
+        } else if (!cus_total_sales.matches(MONEY_REGEX)) {
+            errors.put("cus_total_sales", "Total Sales must contain only positive digits and at most one decimal point.");
+        } else {
+            try {
+                BigDecimal totalSales = new BigDecimal(cus_total_sales);
+                if (totalSales.compareTo(BigDecimal.ZERO) < 0) {
+                    errors.put("cus_total_sales", "Total Sales cannot be negative.");
+                }
+            } catch (NumberFormatException e) {
+                errors.put("cus_total_sales", "Total Sales must be a valid decimal number.");
+            }
+        }
+
+        // Notes is optional – just check length if provided.
+        if (cus_notes != null && cus_notes.length() > 255) {
+            errors.put("cus_notes", "Notes must be <= 255 characters.");
+        }
+
+        // If there are errors, set the error map and original values in request scope and forward back to the form.
+        if (!errors.isEmpty()) {
+            request.setAttribute("errors", errors);
+            // Set original field values so the form can re-populate:
+            request.setAttribute("cus_fname", cus_fname);
+            request.setAttribute("cus_lname", cus_lname);
+            request.setAttribute("cus_street", cus_street);
+            request.setAttribute("cus_city", cus_city);
+            request.setAttribute("cus_state", cus_state);
+            request.setAttribute("cus_zip", cus_zip);
+            request.setAttribute("cus_phone", cus_phone);
+            request.setAttribute("cus_email", cus_email);
+            request.setAttribute("cus_balance", cus_balance);
+            request.setAttribute("cus_total_sales", cus_total_sales);
+            request.setAttribute("cus_notes", cus_notes);
+            getServletContext().getRequestDispatcher("/customerform.jsp").forward(request, response);
+            return;
+        }
+
+        // If no errors, create a Customer object.
+        Customer customer = new Customer();
+        customer.setFirstName(cus_fname);
+        customer.setLastName(cus_lname);
+        customer.setStreet(cus_street);
+        customer.setCity(cus_city);
+        customer.setState(cus_state);
+        customer.setZip(Integer.parseInt(cus_zip));
+        customer.setPhone(Long.parseLong(cus_phone));
+        customer.setEmail(cus_email);
+        customer.setBalance(new BigDecimal(cus_balance));
+        customer.setTotalSales(new BigDecimal(cus_total_sales));
+        customer.setNotes(cus_notes == null ? "" : cus_notes);
+
+        // Set the customer object in request scope and forward to thanks.jsp.
+        request.setAttribute("customer", customer);
+        getServletContext().getRequestDispatcher("/thanks.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
 }

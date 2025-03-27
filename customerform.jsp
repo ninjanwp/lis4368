@@ -1,225 +1,219 @@
-<%-- Use core library --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<!--
-"Time-stamp: <Sat, 12-19-20, 17:48:53 Eastern Standard Time>"
-//-->
-<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="My online portfolio that illustrates skills acquired while working through various project requirements.">
-	<meta name="author" content="Mark K. Jowett, Ph.D.">
-	<link rel="icon" href="favicon.ico">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="LIS4368 - Customer Management Form"
+    />
+    <meta name="author" content="Your Name" />
+    <title>LIS4368 - Customer Form</title>
+    <%@ include file="/css/include_css.jsp" %>
+  </head>
+  <body>
+    <%@ include file="/global/nav_global.jsp" %>
+    <div class="container">
+      <div class="starter-template">
+        <div class="page-header">
+          <%@ include file="/a4/global/header.jsp" %>
+        </div>
+        <!-- Begin Customer Form -->
+        <form id="add_customer_form" method="post" class="form-horizontal"
+              action="${pageContext.request.contextPath}/customerAdmin">
+          <input type="hidden" name="action" value="add_customer" />
 
-	<title>CRSXXXX - JSP Forms</title>
+          <!-- First Name -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_fname">First Name:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_fname" id="cus_fname" maxlength="15"
+                     class="form-control 
+                     ${not empty errors.cus_fname ? 'is-invalid' : (not empty cus_fname ? 'is-valid' : '')}"
+                     value="${cus_fname != null ? cus_fname : ''}" />
+              <c:if test="${not empty errors.cus_fname}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_fname}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-	<%@ include file="/css/include_css.jsp" %>		
-	
-</head>
-<body>
+          <!-- Last Name -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_lname">Last Name:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_lname" id="cus_lname" maxlength="30"
+                     class="form-control 
+                     ${not empty errors.cus_lname ? 'is-invalid' : (not empty cus_lname ? 'is-valid' : '')}"
+                     value="${cus_lname != null ? cus_lname : ''}" />
+              <c:if test="${not empty errors.cus_lname}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_lname}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-<!-- display application path -->
-<% //= request.getContextPath()%>
-	
-<!-- can also find path like this...<a href="${pageContext.request.contextPath}${'/a5/index.jsp'}">A5</a> -->	
-	
-	<%@ include file="/global/nav_global.jsp" %>	
+          <!-- Street -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_street">Street:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_street" id="cus_street" maxlength="30"
+                     class="form-control 
+                     ${not empty errors.cus_street ? 'is-invalid' : (not empty cus_street ? 'is-valid' : '')}"
+                     value="${cus_street != null ? cus_street : ''}" />
+              <c:if test="${not empty errors.cus_street}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_street}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-	<div class="container">
-		<div class="starter-template">
-					<div class="page-header">
+          <!-- City -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_city">City:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_city" id="cus_city" maxlength="30"
+                     class="form-control 
+                     ${not empty errors.cus_city ? 'is-invalid' : (not empty cus_city ? 'is-valid' : '')}"
+                     value="${cus_city != null ? cus_city : ''}" />
+              <c:if test="${not empty errors.cus_city}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_city}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-					<!-- View source or uncomment to display Parameter value...
-								Parameter value: <%= request.getParameter("assign_num") %>
+          <!-- State -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_state">State:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_state" id="cus_state" maxlength="2"
+                     class="form-control 
+                     ${not empty errors.cus_state ? 'is-invalid' : (not empty cus_state ? 'is-valid' : '')}"
+                     value="${cus_state != null ? cus_state : ''}" />
+              <c:if test="${not empty errors.cus_state}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_state}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-								Note: use JSTL (JSP Standard Tag Library) combined with EL (Expression Language), instead of Java scriplets to run conditional logic.
-								To use core tag must include tag Library link in first line of file - see top.
-								<%  //@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-								Also, need taglib .jar files. See WEB-INF > lib directory.
-						-->
+          <!-- Zip -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_zip">Zip:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_zip" id="cus_zip" maxlength="9"
+                     class="form-control 
+                     ${not empty errors.cus_zip ? 'is-invalid' : (not empty cus_zip ? 'is-valid' : '')}"
+                     value="${cus_zip != null ? cus_zip : ''}" />
+              <c:if test="${not empty errors.cus_zip}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_zip}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-					<%  // w/o using taglib: String anum = request.getParameter("assign_num"); %>
-					<!-- Or, using JSTL's expression language (EL): request parameters made available in implicit param object. -->
-						
-					<c:set var="anum" value="${param.assign_num}" scope="request" />
-					<!-- Uncomment to Print: -->
-					<%-- <c:out value="${anum}" /> --%>
-					
-					<c:choose>
-						<c:when test="${anum == null || anum == '0'}">
-						<%@ include file="/global/header.jsp" %>
-					</div>
-					<p><i>${message}</i></p>
-						</c:when>
+          <!-- Phone -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_phone">Phone:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_phone" id="cus_phone" maxlength="10"
+                     class="form-control 
+                     ${not empty errors.cus_phone ? 'is-invalid' : (not empty cus_phone ? 'is-valid' : '')}"
+                     value="${cus_phone != null ? cus_phone : ''}" />
+              <c:if test="${not empty errors.cus_phone}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_phone}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-						<c:when test="${anum == 'a4'}">
-							<%@ include file="/a4/global/header.jsp" %>													
-				</div>
-						</c:when>
+          <!-- Email -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_email">Email:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_email" id="cus_email" maxlength="100"
+                     class="form-control 
+                     ${not empty errors.cus_email ? 'is-invalid' : (not empty cus_email ? 'is-valid' : '')}"
+                     value="${cus_email != null ? cus_email : ''}" />
+              <c:if test="${not empty errors.cus_email}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_email}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-						<c:when test="${anum == 'a5'}">
-							<%@ include file="/a5/global/header.jsp" %>
-			</div>
-						</c:when>
+          <!-- Balance -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_balance">Balance:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_balance" id="cus_balance" maxlength="6"
+                     class="form-control 
+                     ${not empty errors.cus_balance ? 'is-invalid' : (not empty cus_balance ? 'is-valid' : '')}"
+                     value="${cus_balance != null ? cus_balance : ''}" />
+              <c:if test="${not empty errors.cus_balance}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_balance}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-						<c:when test="${anum == 'p2'}">
-							<%@ include file="/p2/global/header.jsp" %>													
-			</div>
-						</c:when>
-						
-						<c:otherwise>
-							<% response.sendRedirect("/lis4368/index.jsp"); %>
-						</c:otherwise>
-					</c:choose>
-					
-					<!--
-							 https://www.tutorialspoint.com/servlets/servlets-first-example.htm								
-							 http://stackoverflow.com/questions/11731377/servlet-returns-http-status-404-the-requested-resource-servlet-is-not-availa								
-							 Form action submission to URL with leading slash:
-							 <form action="/servlet">
-							 Leading slash / makes URL relative to domain, that is, form will submit to:
-							 http://localhost:9999/servlet
+          <!-- Total Sales -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_total_sales">Total Sales:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_total_sales" id="cus_total_sales" maxlength="6"
+                     class="form-control 
+                     ${not empty errors.cus_total_sales ? 'is-invalid' : (not empty cus_total_sales ? 'is-valid' : '')}"
+                     value="${cus_total_sales != null ? cus_total_sales : ''}" />
+              <c:if test="${not empty errors.cus_total_sales}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_total_sales}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-							 Form action submission to URL w/o leading slash:								
-							 <form action="servlet">
-							 Makes URL relative to current directory of current URL. Form will submit to:
-							 http://localhost:9999/contextname/somedirectory/servlet								
+          <!-- Notes (optional) -->
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for="cus_notes">Notes:</label>
+            <div class="col-sm-4">
+              <input type="text" name="cus_notes" id="cus_notes" maxlength="255"
+                     class="form-control 
+                     ${not empty errors.cus_notes ? 'is-invalid' : (not empty cus_notes ? 'is-valid' : '')}"
+                     value="${cus_notes != null ? cus_notes : ''}" />
+              <c:if test="${not empty errors.cus_notes}">
+                <div class="invalid-feedback">
+                  <c:out value="${errors.cus_notes}" />
+                </div>
+              </c:if>
+            </div>
+          </div>
 
-							 Best solution: make URL domain-relative (won't need to fix URLs when JSP/HTML files moved into another folder)
-							 <form action="${pageContext.request.contextPath}/servlet">
-
-							 Makes URL context relative. Form will submit to:								
-							 <form action="/contextname/servlet">
-							 Will *always* submit to correct URL!
-
-							 Use this servlet for testing: ShowParameters								
-					-->
-					
-					<p><a href="customerAdmin?action=display_customers">Display Customers</a></p>
-
-					<% //for debugging, test input (test servlet provided): action="testInput" %>
-					<form id="add_customer_form" method="post" class="form-horizontal" action="${pageContext.request.contextPath}/customerAdmin">
-
-						<input type="hidden" name="action" value="add_customer">
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">FName:</label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" maxlength="15" name="fname" value="${customer.fname}" />
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">LName:</label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" maxlength="30" name="lname" value="${customer.lname}" />
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Email:</label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" maxlength="100" name="email" value="${customer.email}" />
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<div class="col-sm-6 col-sm-offset-3">
-								<button type="submit" class="btn btn-primary" name="signup" value="Sign up">Submit</button>
-							</div>
-						</div>
-					</form>
-
-					<%@ include file="/global/footer.jsp" %>
-
-	</div> <!-- end starter-template -->
-	</div> <!-- end container -->
-
-	<%-- test server-side validation, by not including client-side JavaScript --%>
- 	<%--@ include file="/js/include_js.jsp" --%>		
- 
-<script type="text/javascript">
-$(document).ready(function() {
-
-	$('#add_customer_form').formValidation({
-			message: 'This value is not valid',
-			icon: {
-					valid: 'fa fa-check',
-					invalid: 'fa fa-times',
-					validating: 'fa fa-refresh'
-			},
-			fields: {
-
-				fname: {
-							validators: {
-									notEmpty: {
-											message: 'First name required'
-									},
-									stringLength: {
-											min: 1,
-											max: 15,
-											message: 'First name no more than 15 characters'
-									},
-									regexp: {
-										//http://www.regular-expressions.info/
-										//http://www.regular-expressions.info/quickstart.html
-										//http://www.regular-expressions.info/shorthand.html
-										//http://stackoverflow.com/questions/13283470/regex-for-allowing-alphanumeric-and-space
-										//alphanumeric (also, "+" prevents empty strings):
-										regexp: /^[a-zA-Z\-]+$/,
-										message: 'First name can only contain letters and hyphens.'
-									},									
-							},
-					},
-
-				lname: {
-							validators: {
-									notEmpty: {
-											message: 'Last name required'
-									},
-									stringLength: {
-											min: 1,
-											max: 30,
-											message: 'Last name no more than 30 characters'
-									},
-									regexp: {
-										regexp: /^[a-zA-Z\-]+$/,
-										message: 'Last name can only contain letters and hyphens'
-									},									
-							},
-					},
-				
-					email: {
-							validators: {
-									notEmpty: {
-											message: 'Email address is required'
-									},
-
-									/*
-									//built-in e-mail validator, comes with formValidation.min.js
-									//using regexp instead (below)
-									emailAddress: {
-											message: 'Must include valid email address'
-									},
-									*/
-								
-									stringLength: {
-											min: 1,
-											max: 100,
-											message: 'Email no more than 100 characters'
-									},
-									regexp: {
-									regexp: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-										message: 'Must include valid email'
-									},																		
-							},
-					},
-			}
-	});
-});
-</script>
-
-</body>
+          <!-- Submit Button -->
+          <div class="form-group">
+            <div class="col-sm-6 col-sm-offset-3">
+              <button type="submit" class="btn btn-primary" name="signup" value="Sign up">
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
+        <%@ include file="/global/footer.jsp" %>
+      </div>
+    </div>
+    <%@ include file="/js/include_js.jsp" %>
+  </body>
 </html>
