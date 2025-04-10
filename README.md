@@ -41,3 +41,11 @@ _Course Work Links:_
       - Design regex for server-side validation
       - Ensure data is displayed through thanks.jsp
       - Complete skillsets 10-12
+
+6. [A5 README.md](a5/README.md "My A5 README.md file")
+
+      - Create and compile customer java servlets
+      - Connect form to servlet
+      - Ensure passed information is displayed
+      - Check SQL for data population
+      - Complete skillsets 13-15

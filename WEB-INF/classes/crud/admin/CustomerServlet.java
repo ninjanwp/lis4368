@@ -1,6 +1,7 @@
 package crud.admin;
 
 import crud.business.Customer;
+import crud.data.CustomerDB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -190,6 +191,20 @@ public class CustomerServlet extends HttpServlet {
         customer.setBalance(new BigDecimal(cus_balance));
         customer.setTotalSales(new BigDecimal(cus_total_sales));
         customer.setNotes(cus_notes == null ? "" : cus_notes);
+
+        // Insert the customer into the database
+        int customerId = CustomerDB.insert(customer);
+        
+        if (customerId > 0) {
+            // Set the generated ID in the customer object
+            customer.setCustomerId(customerId);
+            
+            // Set success message
+            request.setAttribute("message", "Customer successfully added to database!");
+        } else {
+            // Set error message
+            request.setAttribute("message", "Error: Failed to add customer to database. Please try again.");
+        }
 
         // Set the customer object in request scope and forward to thanks.jsp.
         request.setAttribute("customer", customer);
